@@ -1,7 +1,9 @@
 import 'dart:math';
 
+import 'package:date_format/date_format.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_sked/e-rozklad_api.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 import 'TimeTableTile.dart';
 
@@ -26,11 +28,11 @@ class _DayPageState extends State<DayPage> with TickerProviderStateMixin {
     DateTime start =
         DateTime(now.year, now.month, now.day).add(Duration(days: 1 - week));
 
-    
-    _tabController = TabController(length: 5, vsync: this, initialIndex: min(week - 1, 4));
+    _tabController =
+        TabController(length: 7, vsync: this, initialIndex: week - 1);
 
     return DefaultTabController(
-      length: 5,
+      length: 7,
       child: Scaffold(
         appBar: AppBar(
           flexibleSpace: Column(
@@ -44,7 +46,9 @@ class _DayPageState extends State<DayPage> with TickerProviderStateMixin {
                   Tab(text: 'Вторник'),
                   Tab(text: 'Среда'),
                   Tab(text: 'Четверг'),
-                  Tab(text: 'Пятница')
+                  Tab(text: 'Пятница'),
+                  Tab(text: 'Субота'),
+                  Tab(text: 'Воскресенье'),
                 ],
               )
             ],
@@ -52,17 +56,31 @@ class _DayPageState extends State<DayPage> with TickerProviderStateMixin {
         ),
         body: StreamBuilder(
           stream: ERozkladAPI.rozkladStream,
+          initialData: ERozkladAPI.getInitialData(start),
           builder: (context, snapshot) {
+            var childs = <Widget>[];
+            if (snapshot.data == null) {
+              for (int i = 0; i < 7; i++) {
+                childs.add(Center(
+                  child: SpinKitCircle(
+                    color: Colors.blue,
+                  ),
+                ));
+                ERozkladAPI.update(false);
+              }
+            } else {
+              for (int i = 0; i < 7; i++)
+                childs.add(TimeTableTile(
+                  title:
+                      formatDate(start.add(Duration(days: i)), [dd, '.', mm]),
+                  lessons:
+                      ERozkladAPI.cache[start.add(Duration(days: i))] ?? [],
+                ));
+            }
+
             return TabBarView(
               controller: _tabController,
-              children: [
-                for (int i = 0; i < 5; i++)
-                  TimeTableTile(
-                    date: start.add(Duration(days: i)),
-                    lessons:
-                        ERozkladAPI.cache[start.add(Duration(days: i))] ?? [],
-                  )
-              ],
+              children: childs,
             );
           },
         ),

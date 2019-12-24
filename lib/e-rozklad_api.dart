@@ -24,39 +24,59 @@ class ERozkladAPI {
   static init() {
     group = storage.getString('group') ?? '1268';
     groupName = storage.getString('groupName');
-    if (cache.isEmpty)
-      update();
   }
 
-  static final _rozklad = StreamController<Map<DateTime, List<Lesson>>>();
+  static final StreamController<Map<DateTime, List<Lesson>>> _rozklad =
+      StreamController.broadcast();
   static Stream<Map<DateTime, List<Lesson>>> get rozkladStream =>
       _rozklad.stream;
 
-  static update() async {
-    var r = await rozklad(group: group);
+  // static final StreamController<Map<DateTime, List<Lesson>>> _rozkladWeek = StreamController.broadcast();
+  // static Stream<Map<DateTime, List<Lesson>>> get rozkladWeekStream =>
+  //     _rozkladWeek.stream;
 
-    if (r == null) {
-      Fluttertoast.showToast(
-        msg: 'Не удалось обновить расписание',
-        toastLength: Toast.LENGTH_LONG,
-        timeInSecForIos: 2,
-      );
-      return;
-    }
-    cache.addAll(r);
+  static var _isUpdate = false;
 
-    var now = DateTime.now();
-    var week = now.weekday;
-    var oldDate =
-        DateTime(now.year, now.month, now.day).add(Duration(days: -week));
+  static getInitialData(DateTime time) {
+    if (cache.isEmpty || !cache.containsKey(time)) return null;
+    return cache;
+  }
 
-    cache.removeWhere((k, v) => k.isBefore(oldDate));
+  static Future update([bool toast = true]) async {
+    if (_isUpdate) return;
+    _isUpdate = true;
+
+    _rozklad.add(null);
+
+    try {
+      var r = await rozklad(group: group);
+
+      if (r == null) {
+        Fluttertoast.showToast(
+          msg: 'Не удалось обновить расписание',
+          toastLength: Toast.LENGTH_LONG,
+          timeInSecForIos: 2,
+        );
+        return;
+      }
+      cache.addAll(r);
+
+      var now = DateTime.now();
+      var week = now.weekday;
+      var oldDate =
+          DateTime(now.year, now.month, now.day).add(Duration(days: -week));
+
+      cache.removeWhere((k, v) => k.isBefore(oldDate));
+
+      if (toast)
+        Fluttertoast.showToast(
+            msg: 'Расписание обновлено',
+            toastLength: Toast.LENGTH_SHORT,
+            timeInSecForIos: 1);
+    } catch (e) {}
+
     _rozklad.add(cache);
-
-    Fluttertoast.showToast(
-        msg: 'Расписание обновлено',
-        toastLength: Toast.LENGTH_LONG,
-        timeInSecForIos: 2);
+    _isUpdate = false;
   }
 
   static Future getfilterFormHtml(url) async {

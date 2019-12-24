@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_sked/WeekPage.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 import 'DayPage.dart';
 import 'e-rozklad_api.dart';
@@ -11,7 +12,12 @@ class SkedApp extends StatefulWidget {
 
 class SkedAppState extends State<SkedApp> {
   int _selectedIndex = 0;
-  bool refreshEnabled = true;
+  bool _isRefresh = false;
+
+  @override
+  void initState() {
+    super.initState();
+  }
 
   void _onItemTapped(int index) {
     setState(() => _selectedIndex = index);
@@ -36,17 +42,26 @@ class SkedAppState extends State<SkedApp> {
           subtitle: Text('ІСД-41', style: TextStyle(color: Colors.white70)),
         ),
         actions: <Widget>[
-          IconButton(
-            icon: Icon(Icons.loop),
-            tooltip: 'Обновить расписание',
-            onPressed: () async {
-              if (refreshEnabled) {
-                refreshEnabled = false;
-                await ERozkladAPI.update();
-                refreshEnabled = true;
-              }
-            },
-          ),
+          if (_isRefresh)
+            IconButton(
+              icon: SpinKitCircle(
+                color: Colors.white,
+                size: 24,
+              ),
+              tooltip: 'Обновить расписание',
+              onPressed: () {},
+            )
+          else
+            IconButton(
+              icon: Icon(Icons.loop),
+              tooltip: 'Обновить расписание',
+              onPressed: () async {
+                ERozkladAPI.update().then((q) {
+                  setState(() => _isRefresh = false);
+                });
+                setState(() => _isRefresh = true);
+              },
+            ),
           PopupMenuButton<int>(
             icon: Icon(Icons.more_vert),
             itemBuilder: (context) => [

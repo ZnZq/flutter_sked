@@ -19,7 +19,7 @@ void main() {
             ERozkladAPI.storage = snapshot.data;
             ERozkladAPI.init();
             return SkedApp();
-          } else
+          } else {
             return Scaffold(
               appBar: AppBar(title: Text('Flutter - Sked')),
               body: Center(
@@ -29,6 +29,7 @@ void main() {
                 ),
               ),
             );
+          }
         },
       ),
     ),
