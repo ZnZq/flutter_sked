@@ -10,8 +10,9 @@ class DayPage extends StatefulWidget {
   _DayPageState createState() => _DayPageState();
 }
 
-class _DayPageState extends State<DayPage> with TickerProviderStateMixin, AutomaticKeepAliveClientMixin  {
+class _DayPageState extends State<DayPage> with TickerProviderStateMixin {
   TabController _tabController;
+  int _index;
 
   @override
   void dispose() {
@@ -27,7 +28,8 @@ class _DayPageState extends State<DayPage> with TickerProviderStateMixin, Automa
         DateTime(now.year, now.month, now.day).add(Duration(days: 1 - week));
 
     _tabController =
-        TabController(length: 7, vsync: this, initialIndex: week - 1);
+        TabController(length: 7, vsync: this, initialIndex: _index ?? week - 1);
+    _tabController.addListener(() => _index = _tabController.index);
 
     return DefaultTabController(
       length: 7,
@@ -87,7 +89,4 @@ class _DayPageState extends State<DayPage> with TickerProviderStateMixin, Automa
       ),
     );
   }
-
-  @override
-  bool get wantKeepAlive => true;
 }
