@@ -3,7 +3,7 @@ import 'package:flutter_sked/WeekPage.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 import 'DayPage.dart';
-import 'e-rozklad_api.dart';
+import 'api/e-rozklad_api.dart';
 
 class SkedApp extends StatefulWidget {
   @override
@@ -39,7 +39,7 @@ class SkedAppState extends State<SkedApp> {
               ),
             ),
           ),
-          subtitle: Text('ІСД-41', style: TextStyle(color: Colors.white70)),
+          subtitle: Text(ERozkladAPI.groupName, style: TextStyle(color: Colors.white70)),
         ),
         actions: <Widget>[
           if (_isRefresh)

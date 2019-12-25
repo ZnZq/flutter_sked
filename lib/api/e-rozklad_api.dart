@@ -1,7 +1,13 @@
 import 'dart:async';
+import 'dart:collection';
 
 import 'package:date_util/date_util.dart';
+import 'package:flutter_sked/models/Lesson.dart';
+import 'package:flutter_sked/models/LessonTime.dart';
+import 'package:flutter_sked/models/LessonType.dart';
+import 'package:flutter_sked/models/Name.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:hive/hive.dart';
 import 'package:html/dom.dart';
 import 'package:meta/meta.dart';
 import 'package:jiffy/jiffy.dart';
@@ -9,31 +15,29 @@ import 'package:jiffy/jiffy.dart';
 import 'package:http/http.dart' as http;
 import 'package:html/parser.dart' as html;
 import 'package:date_format/date_format.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class ERozkladAPI {
   static var _dateUtility = new DateUtil();
-  static var cache = <DateTime, List<Lesson>>{};
-  static SharedPreferences storage;
-  static String group = "1268";
-  static String groupName;
+  static Map<DateTime, List<Lesson>> cache = {};
+  static String group, groupName;
   static bool login;
 
   static var filterForm = RegExp(r'<form.*id="filter-form".*\/form>');
 
   static init() {
-    group = storage.getString('group') ?? '1268';
-    groupName = storage.getString('groupName');
+    var box = Hive.box('cache');
+    group = box.get('group', defaultValue: '1268');
+    groupName = box.get('groupName', defaultValue: 'ІСД-41');
+
+    var hashMap = box.get('cache', defaultValue: <DateTime, List<Lesson>>{}) as LinkedHashMap;
+
+    cache = hashMap.map((k,v) => MapEntry<DateTime, List<Lesson>>(k as DateTime, v.cast<Lesson>()));
   }
 
   static final StreamController<Map<DateTime, List<Lesson>>> _rozklad =
       StreamController.broadcast();
   static Stream<Map<DateTime, List<Lesson>>> get rozkladStream =>
       _rozklad.stream;
-
-  // static final StreamController<Map<DateTime, List<Lesson>>> _rozkladWeek = StreamController.broadcast();
-  // static Stream<Map<DateTime, List<Lesson>>> get rozkladWeekStream =>
-  //     _rozkladWeek.stream;
 
   static var _isUpdate = false;
 
@@ -57,7 +61,7 @@ class ERozkladAPI {
           toastLength: Toast.LENGTH_LONG,
           timeInSecForIos: 2,
         );
-        return;
+        throw 'Не удалось обновить расписание';
       }
       cache.addAll(r);
 
@@ -67,6 +71,9 @@ class ERozkladAPI {
           DateTime(now.year, now.month, now.day).add(Duration(days: -week));
 
       cache.removeWhere((k, v) => k.isBefore(oldDate));
+
+      var box = Hive.box('cache');
+      box.put('cache', cache);
 
       if (toast)
         Fluttertoast.showToast(
@@ -275,47 +282,3 @@ class ERozkladAPI {
     }
   }
 }
-
-class Lesson {
-  int number;
-  LessonTime time;
-  LessonType type = LessonType.window;
-  Name name = Name(fullName: '', shortName: '');
-  String groupName = '';
-  String hall = '';
-  Name teacher = Name(fullName: '', shortName: '');
-  String info = '';
-  Lesson(
-      {@required this.number,
-      @required this.time,
-      this.type,
-      this.groupName,
-      this.hall,
-      this.info,
-      this.name,
-      this.teacher});
-
-  Lesson.window({this.number, this.time});
-
-  @override
-  String toString() {
-    return '${time.start} ${name.shortName}';
-  }
-}
-
-class Name {
-  String shortName;
-  String fullName;
-  Name({this.fullName, this.shortName});
-}
-
-class LessonTime {
-  DateTime start, end;
-  LessonTime({this.start, this.end});
-  @override
-  String toString() {
-    return '$start - $end';
-  }
-}
-
-enum LessonType { lecture, laboratory, practical, offset, exam, window }

@@ -1,10 +1,13 @@
 import 'package:date_format/date_format.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_sked/SectionTile.dart';
-import 'package:flutter_sked/e-rozklad_api.dart';
+import 'package:flutter_sked/api/e-rozklad_api.dart';
+
+import 'models/Lesson.dart';
+import 'package:flutter_sked/models/LessonType.dart';
 
 class LessonTile extends StatelessWidget {
-  Lesson lesson;
+  final Lesson lesson;
 
   LessonTile(this.lesson);
 
@@ -17,7 +20,7 @@ class LessonTile extends StatelessWidget {
 
     return SectionTile([
       if (lesson.type != LessonType.window)
-        LeftRight([
+        leftRight([
           Text(lesson.name.fullName, style: style),
           Text(ERozkladAPI.lessonTypeToString(lesson.type), style: style),
         ])
@@ -26,7 +29,7 @@ class LessonTile extends StatelessWidget {
           child:
               Text(ERozkladAPI.lessonTypeToString(lesson.type), style: style),
         ),
-      LeftRight([
+      leftRight([
         Text(lesson.number.toString(), style: style),
         Text(
             '${formatDate(start, [HH, ':', nn])} - ${formatDate(end, [
@@ -37,14 +40,14 @@ class LessonTile extends StatelessWidget {
             style: style),
       ]),
       if (lesson.type != LessonType.window)
-        LeftRight([
+        leftRight([
           Text(lesson.teacher.fullName, style: style),
           Text(lesson.hall, style: style),
         ]),
     ]);
   }
 
-  LeftRight(List<Widget> childs) {
+  Widget leftRight(List<Widget> childs) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: childs,

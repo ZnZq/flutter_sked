@@ -1,8 +1,6 @@
-import 'dart:math';
-
 import 'package:date_format/date_format.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_sked/e-rozklad_api.dart';
+import 'package:flutter_sked/api/e-rozklad_api.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 import 'TimeTableTile.dart';
@@ -12,7 +10,7 @@ class DayPage extends StatefulWidget {
   _DayPageState createState() => _DayPageState();
 }
 
-class _DayPageState extends State<DayPage> with TickerProviderStateMixin {
+class _DayPageState extends State<DayPage> with TickerProviderStateMixin, AutomaticKeepAliveClientMixin  {
   TabController _tabController;
 
   @override
@@ -70,12 +68,14 @@ class _DayPageState extends State<DayPage> with TickerProviderStateMixin {
               }
             } else {
               for (int i = 0; i < 7; i++)
-                childs.add(TimeTableTile(
-                  title:
-                      formatDate(start.add(Duration(days: i)), [dd, '.', mm]),
-                  lessons:
-                      ERozkladAPI.cache[start.add(Duration(days: i))] ?? [],
-                ));
+                childs.add(
+                  TimeTableTile(
+                    title:
+                        formatDate(start.add(Duration(days: i)), [dd, '.', mm]),
+                    lessons:
+                        ERozkladAPI.cache[start.add(Duration(days: i))] ?? [],
+                  ),
+                );
             }
 
             return TabBarView(
@@ -87,4 +87,7 @@ class _DayPageState extends State<DayPage> with TickerProviderStateMixin {
       ),
     );
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }

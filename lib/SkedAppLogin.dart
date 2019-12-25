@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_sked/e-rozklad_api.dart';
 
 class SkedAppLogin extends StatefulWidget {
   @override

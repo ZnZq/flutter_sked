@@ -2,9 +2,8 @@ import 'package:date_format/date_format.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
-import 'TimeTableTile.dart';
 import 'WeekTimeTable.dart';
-import 'e-rozklad_api.dart';
+import 'api/e-rozklad_api.dart';
 
 class WeekPage extends StatelessWidget {
   @override

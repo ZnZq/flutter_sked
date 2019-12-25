@@ -2,12 +2,17 @@ import 'package:date_format/date_format.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_sked/TimeTableTile.dart';
 
-import 'e-rozklad_api.dart';
+import 'api/e-rozklad_api.dart';
 
-class WeekTimeTable extends StatelessWidget {
-  DateTime startDate;
+class WeekTimeTable extends StatefulWidget {
+  final DateTime startDate;
   WeekTimeTable(this.startDate);
 
+  @override
+  _WeekTimeTableState createState() => _WeekTimeTableState();
+}
+
+class _WeekTimeTableState extends State<WeekTimeTable> {
   final weekDays = const [
     "Понедельник",
     "Вторник",
@@ -25,12 +30,12 @@ class WeekTimeTable extends StatelessWidget {
     for (int i = 0; i < weekDays.length; i++) {
       childs.add(TimeTableTile(
         title:
-            '${weekDays[i]} - ${formatDate(startDate.add(Duration(days: i)), [
+            '${weekDays[i]} - ${formatDate(widget.startDate.add(Duration(days: i)), [
           dd,
           '.',
           mm
         ])}',
-        lessons: ERozkladAPI.cache[startDate.add(Duration(days: i))] ?? [],
+        lessons: ERozkladAPI.cache[widget.startDate.add(Duration(days: i))] ?? [],
       ));
       childs.add(SizedBox(height: 10));
     }
