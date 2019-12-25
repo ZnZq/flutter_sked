@@ -35,6 +35,7 @@ class _DayPageState extends State<DayPage> with TickerProviderStateMixin {
       length: 7,
       child: Scaffold(
         appBar: AppBar(
+          automaticallyImplyLeading: false,
           flexibleSpace: Column(
             mainAxisAlignment: MainAxisAlignment.end,
             children: <Widget>[

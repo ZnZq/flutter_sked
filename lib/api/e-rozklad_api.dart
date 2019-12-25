@@ -26,18 +26,25 @@ class ERozkladAPI {
 
   static init() {
     var box = Hive.box('cache');
-    group = box.get('group', defaultValue: '1268');
-    groupName = box.get('groupName', defaultValue: 'ІСД-41');
+    group = box.get('group', defaultValue: '');
+    groupName = box.get('groupName', defaultValue: '');
 
-    var hashMap = box.get('cache', defaultValue: <DateTime, List<Lesson>>{}) as LinkedHashMap;
+    var hashMap = box.get('cache', defaultValue: <DateTime, List<Lesson>>{})
+        as LinkedHashMap;
 
-    cache = hashMap.map((k,v) => MapEntry<DateTime, List<Lesson>>(k as DateTime, v.cast<Lesson>()));
+    cache = hashMap.map((k, v) =>
+        MapEntry<DateTime, List<Lesson>>(k as DateTime, v.cast<Lesson>()));
   }
 
   static final StreamController<Map<DateTime, List<Lesson>>> _rozklad =
       StreamController.broadcast();
   static Stream<Map<DateTime, List<Lesson>>> get rozkladStream =>
       _rozklad.stream;
+
+  static final StreamController<Map<String, Map<String, String>>> _groupData =
+      StreamController.broadcast();
+  static Stream<Map<String, Map<String, String>>> get groupDataStream =>
+      _groupData.stream;
 
   static var _isUpdate = false;
 
@@ -96,7 +103,7 @@ class ERozkladAPI {
   }
 
   static Map<String, String> _parseSelect(Element filter, selectId) {
-    var data = <String, String>{'empty': ''};
+    var data = <String, String>{'': 'Не указано'};
     try {
       if (filter == null) return data;
       var select = filter.querySelector('#$selectId');
@@ -108,15 +115,31 @@ class ERozkladAPI {
     return data;
   }
 
-  static Future getOptions({faculty, course}) async {
-    var formHtml = await getfilterFormHtml(
-        'http://e-rozklad.dut.edu.ua/timeTable/group?TimeTableForm[faculty]=$faculty&TimeTableForm[course]=$course');
+  static bool _isOptions = false;
 
-    return {
-      'faculty': _parseSelect(formHtml, 'TimeTableForm_faculty'),
-      'course': _parseSelect(formHtml, 'TimeTableForm_course'),
-      'group': _parseSelect(formHtml, 'TimeTableForm_group'),
+  static Future getOptions({faculty = '', course = ''}) async {
+    if (_isOptions) return;
+    _isOptions = true;
+    var data = {
+      'faculty': {'': 'Не указано'},
+      'course': {'': 'Не указано'},
+      'group': {'': 'Не указано'},
     };
+    _groupData.add(null);
+    try {
+      var formHtml = await getfilterFormHtml(
+          'http://e-rozklad.dut.edu.ua/timeTable/group?TimeTableForm[faculty]=$faculty&TimeTableForm[course]=$course');
+
+      data.addAll({
+        'faculty': _parseSelect(formHtml, 'TimeTableForm_faculty'),
+        'course': _parseSelect(formHtml, 'TimeTableForm_course'),
+        'group': _parseSelect(formHtml, 'TimeTableForm_group'),
+      });
+    } catch (e) {
+      print(e);
+    }
+    _isOptions = false;
+    _groupData.add(data);
   }
 
   static faculties() async => _parseSelect(
@@ -169,7 +192,8 @@ class ERozkladAPI {
         weekdayTimes[weekNumber] = [];
         lessonNumbers[weekNumber] = [];
         for (var times in weekday.children.skip(1)) {
-          lessonNumbers[weekNumber].add(int.parse(times.querySelector('.lesson').text.split(' ')[0]));
+          lessonNumbers[weekNumber].add(
+              int.parse(times.querySelector('.lesson').text.split(' ')[0]));
           weekdayTimes[weekNumber].add(LessonTime(
             start: Jiffy(times.querySelector('.start').text, "HH:mm").dateTime,
             end: Jiffy(times.querySelector('.finish').text, "HH:mm").dateTime,

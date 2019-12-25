@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_sked/WeekPage.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:hive/hive.dart';
 
 import 'DayPage.dart';
+import 'SkedAppLogin.dart';
 import 'api/e-rozklad_api.dart';
 
 class SkedApp extends StatefulWidget {
@@ -14,11 +16,6 @@ class SkedAppState extends State<SkedApp> {
   int _selectedIndex = 0;
   bool _isRefresh = false;
 
-  @override
-  void initState() {
-    super.initState();
-  }
-
   void _onItemTapped(int index) {
     setState(() => _selectedIndex = index);
   }
@@ -27,6 +24,7 @@ class SkedAppState extends State<SkedApp> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         title: ListTile(
           title: Align(
             alignment: Alignment(-1.5, 0),
@@ -39,7 +37,8 @@ class SkedAppState extends State<SkedApp> {
               ),
             ),
           ),
-          subtitle: Text(ERozkladAPI.groupName, style: TextStyle(color: Colors.white70)),
+          subtitle: Text(ERozkladAPI.groupName,
+              style: TextStyle(color: Colors.white70)),
         ),
         actions: <Widget>[
           if (_isRefresh)
@@ -64,6 +63,22 @@ class SkedAppState extends State<SkedApp> {
             ),
           PopupMenuButton<int>(
             icon: Icon(Icons.more_vert),
+            onSelected: (select) {
+              switch (select) {
+                case 1:
+                  {
+                    var box = Hive.box('cache');
+                    box.put('group', ERozkladAPI.group = '');
+                    box.put('groupName', ERozkladAPI.groupName = '');
+                    box.put('cache', ERozkladAPI.cache..clear());
+                    Navigator.pushAndRemoveUntil(
+                        context,
+                        MaterialPageRoute(builder: (context) => SkedAppLogin()),
+                        ModalRoute.withName('/'));
+                    break;
+                  }
+              }
+            },
             itemBuilder: (context) => [
               PopupMenuItem(
                 value: 1,
