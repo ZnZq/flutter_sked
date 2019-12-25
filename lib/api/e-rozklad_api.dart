@@ -163,10 +163,13 @@ class ERozkladAPI {
       var trows = table.querySelectorAll('tr');
 
       var weekdayTimes = <int, List<LessonTime>>{};
+      var lessonNumbers = <int, List<int>>{};
       var weekNumber = 1;
       for (var weekday in trows.map((e) => e.children[0])) {
         weekdayTimes[weekNumber] = [];
+        lessonNumbers[weekNumber] = [];
         for (var times in weekday.children.skip(1)) {
+          lessonNumbers[weekNumber].add(int.parse(times.querySelector('.lesson').text.split(' ')[0]));
           weekdayTimes[weekNumber].add(LessonTime(
             start: Jiffy(times.querySelector('.start').text, "HH:mm").dateTime,
             end: Jiffy(times.querySelector('.finish').text, "HH:mm").dateTime,
@@ -189,7 +192,7 @@ class ERozkladAPI {
         for (var tdLessons in trows.map((e) => e.children[1 + week])) {
           if (tdLessons.classes.contains('closed')) continue;
 
-          var lessonNumber = 0;
+          var lessonNumber = -1;
 
           DateTime date =
               Jiffy(tdLessons.children[0].text, "dd.MM.yyyy").dateTime;
@@ -201,8 +204,8 @@ class ERozkladAPI {
             if (dataContent.trim().isEmpty) {
               if (hasFirstLesson)
                 lessons.add(Lesson.window(
-                    number: lessonNumber,
-                    time: weekdayTimes[weekDay][lessonNumber - 1]));
+                    number: lessonNumbers[weekDay][lessonNumber],
+                    time: weekdayTimes[weekDay][lessonNumber]));
               continue;
             }
 
@@ -218,8 +221,8 @@ class ERozkladAPI {
 
             lessons.add(
               Lesson(
-                  number: lessonNumber,
-                  time: weekdayTimes[weekDay][lessonNumber - 1],
+                  number: lessonNumbers[weekDay][lessonNumber],
+                  time: weekdayTimes[weekDay][lessonNumber],
                   type: type,
                   name: Name(
                     fullName: lessonName[0],

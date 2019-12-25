@@ -15,7 +15,7 @@ class WeekPage extends StatelessWidget {
 
     var tabs = <Widget>[];
     DateTime s = start.add(Duration(days: 0));
-    for (int i = 0; i < 4; i++) {
+    for (int i = 0; i < 5; i++) {
       tabs.add(Tab(
         text: '${formatDate(s, [
           dd,
