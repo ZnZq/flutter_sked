@@ -82,11 +82,13 @@ class ERozkladAPI {
       var box = Hive.box('cache');
       box.put('cache', cache);
 
-      if (toast)
+      if (toast) {
+        Fluttertoast.cancel();
         Fluttertoast.showToast(
             msg: 'Расписание обновлено',
             toastLength: Toast.LENGTH_SHORT,
             timeInSecForIos: 1);
+      }
     } catch (e) {}
 
     _rozklad.add(cache);

@@ -26,8 +26,7 @@ class LessonTile extends StatelessWidget {
                   builder: (context) {
                     return SimpleDialog(
                       title: Center(child: Text('Информация')),
-                      contentPadding:
-                          EdgeInsets.all(10),
+                      contentPadding: EdgeInsets.all(10),
                       children: <Widget>[
                         Center(
                             child: Text('Название',
@@ -36,14 +35,14 @@ class LessonTile extends StatelessWidget {
                         Text(
                             '${lesson.name.fullName}\n(${lesson.name.shortName})',
                             textAlign: TextAlign.center),
-                            SizedBox(height: 10),
+                        SizedBox(height: 10),
                         Center(
                             child: Text('Тип',
                                 style: const TextStyle(
                                     fontWeight: FontWeight.bold))),
                         Text(ERozkladAPI.lessonTypeToString(lesson.type),
                             textAlign: TextAlign.center),
-                            SizedBox(height: 10),
+                        SizedBox(height: 10),
                         Center(
                             child: Text('Номер пары',
                                 style: const TextStyle(
@@ -62,7 +61,7 @@ class LessonTile extends StatelessWidget {
                                     fontWeight: FontWeight.bold))),
                         Text(lesson.teacher.fullName,
                             textAlign: TextAlign.center),
-                            SizedBox(height: 10),
+                        SizedBox(height: 10),
                         Center(
                             child: Text('Время',
                                 style: const TextStyle(
@@ -74,16 +73,14 @@ class LessonTile extends StatelessWidget {
                               nn
                             ])} - ${formatDate(end, [HH, ':', nn])}',
                             textAlign: TextAlign.center),
-                            SizedBox(height: 10),
+                        SizedBox(height: 10),
                         Center(
                             child: Text('Дата',
                                 style: const TextStyle(
                                     fontWeight: FontWeight.bold))),
-                        Text(
-                            formatDate(
-                                lesson.date, [dd, '.', mm, '.', yyyy]),
+                        Text(formatDate(lesson.date, [dd, '.', mm, '.', yyyy]),
                             textAlign: TextAlign.center),
-                            SizedBox(height: 10),
+                        SizedBox(height: 10),
                         Center(
                             child: Text('Информация',
                                 style: const TextStyle(

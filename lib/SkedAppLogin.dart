@@ -11,8 +11,6 @@ class SkedAppLogin extends StatefulWidget {
 }
 
 class SkedAppLoginState extends State<SkedAppLogin> {
-  final _formKey = GlobalKey<FormState>();
-
   String _faculty = '', _course = '', _group = '';
 
   @override
