@@ -33,6 +33,9 @@ class Lesson {
   @HiveField(7)
   String info = '';
   
+  @HiveField(8)
+  DateTime date = DateTime.now();
+
   Lesson(
       {@required this.number,
       @required this.time,
@@ -41,7 +44,8 @@ class Lesson {
       this.hall,
       this.info,
       this.name,
-      this.teacher});
+      this.teacher, 
+      this.date});
 
   Lesson.window({this.number, this.time});
 

@@ -245,21 +245,23 @@ class ERozkladAPI {
 
             lessons.add(
               Lesson(
-                  number: lessonNumbers[weekDay][lessonNumber],
-                  time: weekdayTimes[weekDay][lessonNumber],
-                  type: type,
-                  name: Name(
-                    fullName: lessonName[0],
-                    shortName:
-                        lessonCell.children[0].children[0].text.split('[')[0],
-                  ),
-                  groupName: data[1],
-                  hall: data[2],
-                  teacher: Name(
-                    fullName: data[3],
-                    shortName: lessonCell.children[0].nodes[5].text.trim(),
-                  ),
-                  info: data[4]),
+                number: lessonNumbers[weekDay][lessonNumber],
+                time: weekdayTimes[weekDay][lessonNumber],
+                type: type,
+                name: Name(
+                  fullName: lessonName[0],
+                  shortName:
+                      lessonCell.children[0].children[0].text.split('[')[0],
+                ),
+                groupName: data[1],
+                hall: data[2],
+                teacher: Name(
+                  fullName: data[3],
+                  shortName: lessonCell.children[0].nodes[5].text.trim(),
+                ),
+                info: data[4],
+                date: date,
+              ),
             );
             hasFirstLesson = true;
           }

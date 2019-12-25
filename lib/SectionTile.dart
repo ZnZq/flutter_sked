@@ -2,26 +2,29 @@ import 'package:flutter/material.dart';
 
 class SectionTile extends StatelessWidget {
   final List<Widget> childs;
-  SectionTile(this.childs);
+  final Function onTap;
+  SectionTile({this.childs, this.onTap});
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.fromLTRB(0, 8, 0, 0),
-      child: Column(
-        children: childs,
-      ),
-      width: MediaQuery.of(context).size.width - 3,
-      padding: EdgeInsets.all(5),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black45,
-            blurRadius: 2,
-            spreadRadius: 1,
-          )
-        ],
+    return ListTile(
+      onTap: onTap,
+      contentPadding: EdgeInsets.only(left: 2, right: 2),
+      title: Container(
+        child: Column(
+          children: childs,
+        ),
+        padding: EdgeInsets.all(5),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black45,
+              blurRadius: 1,
+              spreadRadius: 1,
+            )
+          ],
+        ),
       ),
     );
   }

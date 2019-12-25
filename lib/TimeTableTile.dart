@@ -18,14 +18,17 @@ class _TimeTableTileState extends State<TimeTableTile> {
   @override
   Widget build(BuildContext context) {
     var childs = <Widget>[
-      for (int i = 0; i < widget.lessons.length; i++) LessonTile(widget.lessons[i])
+      for (int i = 0; i < widget.lessons.length; i++)
+        LessonTile(widget.lessons[i])
     ];
     if (widget.lessons.length == 0)
-      childs.add(SectionTile([
-        Center(
-          child: Text('Пар нет', style: TextStyle(fontSize: 16, height: 1.5)),
-        )
-      ]));
+      childs.add(SectionTile(
+        childs: [
+          Center(
+            child: Text('Пар нет', style: TextStyle(fontSize: 16, height: 1.5)),
+          )
+        ],
+      ));
     return Container(
       padding: EdgeInsets.fromLTRB(0, 10, 0, 0),
       child: Column(

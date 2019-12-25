@@ -22,13 +22,14 @@ class LessonAdapter extends TypeAdapter<Lesson> {
       info: fields[7] as String,
       name: fields[3] as Name,
       teacher: fields[6] as Name,
+      date: fields[8] as DateTime,
     );
   }
 
   @override
   void write(BinaryWriter writer, Lesson obj) {
     writer
-      ..writeByte(8)
+      ..writeByte(9)
       ..writeByte(0)
       ..write(obj.number)
       ..writeByte(1)
@@ -44,6 +45,8 @@ class LessonAdapter extends TypeAdapter<Lesson> {
       ..writeByte(6)
       ..write(obj.teacher)
       ..writeByte(7)
-      ..write(obj.info);
+      ..write(obj.info)
+      ..writeByte(8)
+      ..write(obj.date);
   }
 }
