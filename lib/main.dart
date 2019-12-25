@@ -11,6 +11,7 @@ import 'models/Name.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   final docsPath = await path.getApplicationDocumentsDirectory();
+  print(docsPath);
   Hive.init(docsPath.path);
   Hive.registerAdapter(LessonAdapter(), 0);
   Hive.registerAdapter(LessonTimeAdapter(), 1);
