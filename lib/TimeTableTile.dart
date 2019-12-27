@@ -31,7 +31,7 @@ class _TimeTableTileState extends State<TimeTableTile> {
       ));
     return Container(
       padding: EdgeInsets.fromLTRB(0, 10, 0, 0),
-      child: Column(
+      child: ListView(
         children: <Widget>[
           if (widget.title != null)
             Text(

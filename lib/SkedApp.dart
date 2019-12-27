@@ -30,15 +30,13 @@ class SkedAppState extends State<SkedApp> {
       appBar: AppBar(
         automaticallyImplyLeading: false,
         title: ListTile(
-          title: Align(
-            alignment: Alignment(-1.5, 0),
-            child: Text(
-              'Flutter - Sked',
-              style: TextStyle(
-                color: Colors.white,
-                fontWeight: FontWeight.w700,
-                fontSize: 20,
-              ),
+          contentPadding: EdgeInsets.all(0),
+          title: Text(
+            'Flutter - Sked',
+            style: TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.w700,
+              fontSize: 20,
             ),
           ),
           subtitle: Text(ERozkladAPI.groupName,
@@ -122,12 +120,14 @@ class SkedAppState extends State<SkedApp> {
                                 IconButton(
                                   icon: Icon(FontAwesome.github),
                                   iconSize: 36,
-                                  onPressed: () => LinkTextSpan.openLink('https://github.com/ZnZq'),
+                                  onPressed: () => LinkTextSpan.openLink(
+                                      'https://github.com/ZnZq'),
                                 ),
                                 IconButton(
                                   icon: Icon(FontAwesome.telegram),
                                   iconSize: 30,
-                                  onPressed: () => LinkTextSpan.openLink('https://t.me/xZnZx'),
+                                  onPressed: () => LinkTextSpan.openLink(
+                                      'https://t.me/xZnZx'),
                                 ),
                               ],
                             )
