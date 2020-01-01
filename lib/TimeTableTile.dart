@@ -4,24 +4,24 @@ import 'package:flutter_sked/SectionTile.dart';
 import 'LessonTile.dart';
 import 'models/Lesson.dart';
 
-class TimeTableTile extends StatefulWidget {
+class TimeTableTile extends StatelessWidget {
   final String title;
   final List<Lesson> lessons;
 
   TimeTableTile({this.title, this.lessons = const []});
 
   @override
-  _TimeTableTileState createState() => _TimeTableTileState();
-}
-
-class _TimeTableTileState extends State<TimeTableTile> {
-  @override
   Widget build(BuildContext context) {
     var childs = <Widget>[
-      for (int i = 0; i < widget.lessons.length; i++)
-        LessonTile(widget.lessons[i])
+      if (title != null)
+        Text(
+          title,
+          textAlign: TextAlign.center,
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+      for (int i = 0; i < lessons.length; i++) LessonTile(lessons[i])
     ];
-    if (widget.lessons.length == 0)
+    if (lessons.length == 0)
       childs.add(SectionTile(
         childs: [
           Center(
@@ -29,19 +29,8 @@ class _TimeTableTileState extends State<TimeTableTile> {
           )
         ],
       ));
-    return Container(
-      padding: EdgeInsets.fromLTRB(0, 10, 0, 0),
-      child: ListView(
-        children: <Widget>[
-          if (widget.title != null)
-            Text(
-              widget.title,
-              textAlign: TextAlign.center,
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ),
-          ...childs
-        ],
-      ),
+    return Column(
+      children: childs,
     );
   }
 }

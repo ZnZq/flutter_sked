@@ -4,15 +4,7 @@ import 'package:flutter_sked/TimeTableTile.dart';
 
 import 'api/e-rozklad_api.dart';
 
-class WeekTimeTable extends StatefulWidget {
-  final DateTime startDate;
-  WeekTimeTable(this.startDate);
-
-  @override
-  _WeekTimeTableState createState() => _WeekTimeTableState();
-}
-
-class _WeekTimeTableState extends State<WeekTimeTable> {
+class WeekTimeTable extends StatelessWidget {
   final weekDays = const [
     "Понедельник",
     "Вторник",
@@ -23,6 +15,9 @@ class _WeekTimeTableState extends State<WeekTimeTable> {
     "Воскресенье",
   ];
 
+  final DateTime startDate;
+  WeekTimeTable(this.startDate);
+
   @override
   Widget build(BuildContext context) {
     var childs = <Widget>[];
@@ -30,12 +25,13 @@ class _WeekTimeTableState extends State<WeekTimeTable> {
     for (int i = 0; i < weekDays.length; i++) {
       childs.add(TimeTableTile(
         title:
-            '${weekDays[i]} - ${formatDate(widget.startDate.add(Duration(days: i)), [
+            '${weekDays[i]} - ${formatDate(startDate.add(Duration(days: i)), [
           dd,
           '.',
           mm
         ])}',
-        lessons: ERozkladAPI.cache[widget.startDate.add(Duration(days: i))] ?? [],
+        lessons:
+            ERozkladAPI.cache[startDate.add(Duration(days: i))] ?? [],
       ));
       childs.add(SizedBox(height: 10));
     }

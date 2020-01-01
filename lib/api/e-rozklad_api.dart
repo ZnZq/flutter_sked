@@ -167,7 +167,7 @@ class ERozkladAPI {
       timeStart =
           DateTime(now.year, now.month, now.day).add(Duration(days: 1 - week));
 
-      timeEnd = timeEnd ?? timeStart.add(Duration(days: 7 * 4 - 1));
+      timeEnd = timeEnd ?? timeStart.add(Duration(days: 7 * 5 - 1));
 
       var start = formatDate(timeStart, [dd, '.', mm, '.', yyyy]);
       var end = formatDate(timeEnd, [dd, '.', mm, '.', yyyy]);
