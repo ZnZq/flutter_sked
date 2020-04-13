@@ -204,16 +204,14 @@ class ERozkladAPI {
         weekNumber++;
       }
 
-      var weekStart =
-          _dateUtility.getWeek(timeStart.month, timeStart.day, timeStart.year);
-      var weekEnd =
-          _dateUtility.getWeek(timeEnd.month, timeEnd.day, timeEnd.year);
+      var weekStart = getWeek(timeStart.month, timeStart.day, timeStart.year);
+      var weekEnd = getWeek(timeEnd.month, timeEnd.day, timeEnd.year);
 
       if (weekStart >= 52 && weekStart > weekEnd) weekEnd += 52;
 
       var dWeek = weekEnd - weekStart;
 
-      for (int week = 0; week <= dWeek; week++) {
+      for (int week = 0; week < dWeek; week++) {
         var weekDay = 1;
         for (var tdLessons in trows.map((e) => e.children[1 + week])) {
           if (tdLessons.classes.contains('closed')) continue;
@@ -275,9 +273,13 @@ class ERozkladAPI {
       return lessonList;
     } catch (e) {
       print(e);
+      print(e.stackTrace);
       return null;
     }
   }
+
+  static getWeek(int monthNum, int dayNum, int year) =>
+      (_dateUtility.daysPastInYear(monthNum, dayNum, year) ~/ 7) + 1;
 
   static LessonType getLessonTypeFromString(String text) {
     switch (text.toLowerCase()) {
